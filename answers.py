@@ -45,9 +45,10 @@ def transformRGB2YIQ(imRGB: np.ndarray) -> np.ndarray:
 
 # get normlized (0,1) image
 def transformYIQ2RGB(imYIQ: np.ndarray) -> np.ndarray:
-    mat = np.array([[0.299, 0.587, 0.144], [0.596, -0.275, -0.321], [0.212, -0.523, 0.311]])
-    mat = np.linalg.inv(mat)
-
+    # mat = np.array([[0.299, 0.587, 0.144], [0.596, -0.275, -0.321], [0.212, -0.523, 0.311]])
+    mat = np.array([[1, 0.956, 0.619], [1, -0.272, -0.647], [1, -1.106, 1.703]])
+    # mat = np.linalg.inv(mat)
+    print(mat)
     for x in imYIQ:
         for y in x:
             y[:] = mat.dot(y[:])
@@ -57,7 +58,6 @@ def transformYIQ2RGB(imYIQ: np.ndarray) -> np.ndarray:
 def histogramEqualize(imOrig: np.ndarray) -> (np.ndarray, np.ndarray, np.ndarray):
     global histOrig, histEq
 
-    color = False;
     if len(imOrig.shape) == 2:
         greyscale = True
     elif len(imOrig.shape) == 3:
@@ -65,17 +65,24 @@ def histogramEqualize(imOrig: np.ndarray) -> (np.ndarray, np.ndarray, np.ndarray
     else:
         raise ValueError('Unsupported array representation. only RGB or Greyscale images allowed')
     imEq = np.copy(imOrig)
-    if greyscale:
-        imEq = cv2.normalize(imEq, None, 0, 255, cv2.NORM_MINMAX)
-        imEq = np.ceil(imEq)  # floating point precision correction
-        imEq = imEq.astype('uint8')
-    else:
-        imEqT = transformRGB2YIQ(imEq)
+    # if greyscale:
+        # imEq = cv2.normalize(imEq, None, 0, 255, cv2.NORM_MINMAX)
+        # imEq = np.ceil(imEq)  # floating point precision correction
+        # imEq = imEq.astype('uint8')
+    if not greyscale:
+        imEqT = cv2.cvtColor(imEq, cv2.COLOR_BGR2RGB)
+        imEqT = cv2.normalize(imEqT.astype('double'), None, 0.0, 1.0, cv2.NORM_MINMAX)
+        imEqT = transformRGB2YIQ(imEqT)  # imeqT is now YIQ
         imEq = imEqT[:, :, 0]
         imEq = cv2.normalize(imEq, None, 0, 255, cv2.NORM_MINMAX)
         imEq = np.ceil(imEq)  # floating point precision correction
         imEq = imEq.astype('uint8')
-        color = True
+
+        # imEqT = transformRGB2YIQ(imEqT)
+        # imEqT = cv2.normalize(imEqT, None, 0, 255, cv2.NORM_MINMAX)
+        # imEqT = np.ceil(imEqT)  # floating point precision correction
+        # imEqT = imEqT.astype('uint8')
+        # imEq = imEqT[:, :, 0]
 
     # Original Histogram:
     plt.subplot(2, 1, 1)
@@ -108,15 +115,13 @@ def histogramEqualize(imOrig: np.ndarray) -> (np.ndarray, np.ndarray, np.ndarray
     plt.show()
 
     # display original image
-    imOrig = cv2.normalize(imOrig, None, 0, 255, cv2.NORM_MINMAX)
-    imOrig = imOrig.astype('uint8')
-    imOrig = cv2.cvtColor(imOrig, cv2.COLOR_RGB2BGR)
-    cv2.imshow('Liad and Timor showing the ORIGINAL image', imOrig)
-    if color:
+    cv2.imshow('Liad Timor and Moshe showing the ORIGINAL image', imOrig)
+    if not greyscale:
         imEq = cv2.normalize(imEq.astype('double'), None, 0.0, 1.0, cv2.NORM_MINMAX)
         imEqT[:, :, 0] = imEq
         imEq = transformYIQ2RGB(imEqT)
         imEq = cv2.normalize(imEq, None, 0, 255, cv2.NORM_MINMAX)
+        imEq = np.ceil(imEq)
         imEq = imEq.astype('uint8')
         imEq = cv2.cvtColor(imEq, cv2.COLOR_RGB2BGR)
     # display equalized image
@@ -144,8 +149,22 @@ def quantizeImage(imOrig: np.ndarray, nQuant: int, nIter: int) -> (List[np.ndarr
 
 
 try:
-    imgArray = imReadAndConvert('tesla.jpg', 2)
-    imgArray2 = imReadAndConvert('test2.jpg', 1)
+    img = cv2.imread('./pics/bla2.jpg', 1)
+    a, b, c = histogramEqualize(img)
+
+    # test transform:
+    # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    # img = cv2.normalize(img.astype('double'), None, 0.0, 1.0, cv2.NORM_MINMAX)
+    # img = transformRGB2YIQ(img)
+    # img = transformYIQ2RGB(img)
+    # img = cv2.normalize(img, None, 0, 255, cv2.NORM_MINMAX)
+    # img = np.ceil(img)
+    # img = img.astype('uint8')
+    # img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+    # cv2.imshow('Liad and Timor showing the EQUALIZED image', img)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
+
 
 except ValueError as err:
     print(err.args)
@@ -153,6 +172,6 @@ except ValueError as err:
 cv2.destroyAllWindows()
 # imDisplay('tesla.jpg', 2)
 # img2 = transformRGB2YIQ(imgArray2)
-# histogramEqualize(imgArray2)
+# histogramEqualize(imgArray)
 
-quantizeImage(imgArray, 5, 5)
+# quantizeImage(imgArray, 5, 5)
