@@ -48,7 +48,6 @@ def transformYIQ2RGB(imYIQ: np.ndarray) -> np.ndarray:
     # mat = np.array([[0.299, 0.587, 0.144], [0.596, -0.275, -0.321], [0.212, -0.523, 0.311]])
     mat = np.array([[1, 0.956, 0.619], [1, -0.272, -0.647], [1, -1.106, 1.703]])
     # mat = np.linalg.inv(mat)
-    print(mat)
     for x in imYIQ:
         for y in x:
             y[:] = mat.dot(y[:])
@@ -131,26 +130,71 @@ def histogramEqualize(imOrig: np.ndarray) -> (np.ndarray, np.ndarray, np.ndarray
 
     return imEq, histOrig, histEq
 
+# gets an 0-255 image and extract the Y from YIQ converted, in 0-1 array.
+def extractYchannelFromBGR(imOrig: np.ndarray) -> np.ndarray:
+    yChannel = np.copy(imOrig)
+    yChannel = cv2.cvtColor(yChannel, cv2.COLOR_BGR2RGB)
+    yChannel = cv2.normalize(yChannel.astype('double'), None, 0.0, 1.0, cv2.NORM_MINMAX)
+    yChannel = transformRGB2YIQ(yChannel)  # yChannel is now YIQ
+    yChannel = yChannel[:, :, 0]
+    return yChannel
+
+def find_nearest(array, value):
+    array = np.asarray(array)
+    idx = (np.abs(array - value)).argmin()
+    return idx
+
 
 def quantizeImage(imOrig: np.ndarray, nQuant: int, nIter: int) -> (List[np.ndarray], List[float]):
-    if len(imOrig.shape) is 2:
-        imQ = imOrig
-        imQ = cv2.normalize(imQ, None, 0, 255, cv2.NORM_MINMAX)
-        imQ = np.ceil(imQ)
-    elif len(imOrig.shape) is 3:
-        imT = transformRGB2YIQ(imOrig)
-        imQ = imT[:,:,0]
+    if len(imOrig.shape) == 2:
+        greyscale = True
+    elif len(imOrig.shape) == 3:
+        greyscale = False
+    else:
+        raise ValueError('Unsupported array representation. only RGB or Greyscale images allowed')
+    imQ = np.copy(imOrig)
+    indexBestQuant = []
+    segments = np.array([0,255])
+    # getting Z:
+    for i in range(1,nQuant):
+        segments = np.insert(segments,i,int((256/nQuant)*i))
 
-    imQ = cv2.normalize(imQ, None, 0, 255, cv2.NORM_MINMAX)
-    imQ = np.ceil(imQ)
-    imQ = imQ.astype('uint8')
+    plt.title('Equalized image histogram with CDF (Liad & Timor)')
+    plt.hist(imQ.flatten(), 256, [0, 255], color='r')
+    plt.xlim([0, 255])
+    plt.legend(('cdf - EQUALIZED', 'histogram - EQUALIZED'), loc='upper right')
+    plt.show()
+
+
+    # between segments
+    for i in range(0,len(segments)-1):
+        histOrig, bins = np.histogram(imQ.flatten(), int(256/nQuant), [segments[i], segments[i+1]-1])
+        print(histOrig)
+        cdf = histOrig.cumsum()
+        print('cdf: ' + str(cdf))
+        histProb = np.array([])
+        avg = 0
+        for j in range(0,len(histOrig)):
+            # histProb = np.insert(histProb, j, histOrig[j]/cdf[-1])
+            avg = avg + (histOrig[j] * (histOrig[j]/cdf[-1]))
+        print(avg)
+        indexBestQuant.append(find_nearest(histOrig, avg)+i*int(256/nQuant))
+
+        plt.hist(imQ.flatten(), int(255/nQuant), [segments[i], segments[i+1]], color='r')
+        plt.xlim([0, 255])
+        plt.show()
+
+    print(indexBestQuant)
+    # imQ = cv2.normalize(imQ, None, 0, 255, cv2.NORM_MINMAX)
+    # imQ = np.ceil(imQ)
+    # imQ = imQ.astype('uint8')
 
     pass
 
 
 try:
     img = cv2.imread('./pics/bla2.jpg', 1)
-    a, b, c = histogramEqualize(img)
+    # a, b, c = histogramEqualize(img)
 
     # test transform:
     # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -169,9 +213,9 @@ try:
 except ValueError as err:
     print(err.args)
 
-cv2.destroyAllWindows()
+# cv2.destroyAllWindows()
 # imDisplay('tesla.jpg', 2)
 # img2 = transformRGB2YIQ(imgArray2)
 # histogramEqualize(imgArray)
 
-# quantizeImage(imgArray, 5, 5)
+quantizeImage(img, 5, 5)
