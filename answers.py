@@ -202,8 +202,8 @@ def quantizeImage(imOrig: np.ndarray, nQuant: int, nIter: int) -> (List[np.ndarr
 
 
 try:
-    img = cv2.imread('./pics/bla2.jpg', 0)
-    img2 = cv2.imread('./pics/notOptimal.jpg', 0)
+    img = cv2.imread('./pics/testImg2.jpg', 0)
+    img2 = cv2.imread('./pics/testImg1.jpg', 0)
     # a, b, c = histogramEqualize(img)
 
     # tests transform:
