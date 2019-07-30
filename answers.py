@@ -30,7 +30,7 @@ def imDisplay(filename: str, representation: int):
     img = np.ceil(img)
     img = img.astype('uint8')
     img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-    cv2.imshow('Liad and Timor showing image', img)
+    cv2.imshow('Liad showing image', img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
@@ -88,7 +88,7 @@ def histogramEqualize(imOrig: np.ndarray) -> (np.ndarray, np.ndarray, np.ndarray
     histOrig, bins = np.histogram(imEq.flatten(), 256, [0, 255])
     cdf = histOrig.cumsum()  # cumulative
     cdf_normalized = cdf * histOrig.max() / cdf.max()
-    plt.title('Original image histogram with CDF (Liad & Timor)')
+    plt.title('Original image histogram with CDF')
     plt.plot(cdf_normalized, color='b')
     plt.hist(imEq.flatten(), 256, [0, 255], color='r')
     plt.xlim([0, 255])
@@ -106,7 +106,7 @@ def histogramEqualize(imOrig: np.ndarray) -> (np.ndarray, np.ndarray, np.ndarray
     cdf = histEq.cumsum()  # cumulative
     cdf_normalized = cdf * histEq.max() / cdf.max()
     plt.subplot(2, 1, 2)
-    plt.title('Equalized image histogram with CDF (Liad & Timor)')
+    plt.title('Equalized image histogram with CDF ')
     plt.plot(cdf_normalized, color='b')
     plt.hist(imEq.flatten(), 256, [0, 255], color='r')
     plt.xlim([0, 255])
@@ -114,7 +114,7 @@ def histogramEqualize(imOrig: np.ndarray) -> (np.ndarray, np.ndarray, np.ndarray
     plt.show()
 
     # display original image
-    cv2.imshow('Liad Timor and Moshe showing the ORIGINAL image', imOrig)
+    cv2.imshow('ORIGINAL image', imOrig)
     if not greyscale:
         imEq = cv2.normalize(imEq.astype('double'), None, 0.0, 1.0, cv2.NORM_MINMAX)
         imEqT[:, :, 0] = imEq
@@ -124,9 +124,8 @@ def histogramEqualize(imOrig: np.ndarray) -> (np.ndarray, np.ndarray, np.ndarray
         imEq = imEq.astype('uint8')
         imEq = cv2.cvtColor(imEq, cv2.COLOR_RGB2BGR)
     # display equalized image
-    cv2.imshow('Liad and Timor showing the EQUALIZED image', imEq)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    cv2.imshow('EQUALIZED image', imEq)
+
 
     return imEq, histOrig, histEq
 
@@ -162,7 +161,7 @@ def quantizeImage(imOrig: np.ndarray, nQuant: int, nIter: int) -> (List[np.ndarr
     for i in range(1, nQuant):
         segments = np.insert(segments, i, int((256 / nQuant) * i))
 
-    plt.title('Equalized image histogram with CDF (Liad & Timor)')
+    plt.title('Equalized image histogram with CDF')
     plt.hist(imQ.flatten(), 256, [0, 255], color='r')
     plt.xlim([0, 255])
     plt.legend(('cdf - EQUALIZED', 'histogram - EQUALIZED'), loc='upper right')
@@ -193,9 +192,8 @@ def quantizeImage(imOrig: np.ndarray, nQuant: int, nIter: int) -> (List[np.ndarr
 
     print(indexBestQuant)
 
-    cv2.imshow('the quantized image', imQ2)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    cv2.imshow('Quantized image', imQ2)
+
     # imQ = cv2.normalize(imQ, None, 0, 255, cv2.NORM_MINMAX)
     # imQ = np.ceil(imQ)
     # imQ = imQ.astype('uint8')
@@ -205,9 +203,10 @@ def quantizeImage(imOrig: np.ndarray, nQuant: int, nIter: int) -> (List[np.ndarr
 
 try:
     img = cv2.imread('./pics/bla2.jpg', 0)
+    img2 = cv2.imread('./pics/notOptimal.jpg', 0)
     # a, b, c = histogramEqualize(img)
 
-    # test transform:
+    # tests transform:
     # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     # img = cv2.normalize(img.astype('double'), None, 0.0, 1.0, cv2.NORM_MINMAX)
     # img = transformRGB2YIQ(img)
@@ -216,7 +215,7 @@ try:
     # img = np.ceil(img)
     # img = img.astype('uint8')
     # img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-    cv2.imshow('original image', img)
+    cv2.imshow('original image 1', img)
 
 
 except ValueError as err:
@@ -227,4 +226,7 @@ except ValueError as err:
 # img2 = transformRGB2YIQ(imgArray2)
 # histogramEqualize(imgArray)
 
+histogramEqualize(img2)
 quantizeImage(img, 5, 5)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
