@@ -7,11 +7,6 @@ Original:
 
 ![image](https://user-images.githubusercontent.com/6436094/61470782-4a619180-a98a-11e9-9db9-9565bd9900cf.png)
 
-
-The histogram & CDF:
-
-![image](https://user-images.githubusercontent.com/6436094/61470506-e6d76400-a989-11e9-95cb-7f8a0e6a41b7.png)
-
 #### We perform histogram equalize operations _without built-in "histeq"_ function as it is not allowed.
 
 Output Image:
@@ -19,6 +14,14 @@ Output Image:
 ![image](https://user-images.githubusercontent.com/6436094/61470863-6ebd6e00-a98a-11e9-8f58-26cfde4d8672.png)
 
 
-The histogram & CDF of equalized image:
+The histogram & CDF of original and equalized images:
 
-![image](https://user-images.githubusercontent.com/6436094/61470543-fbb3f780-a989-11e9-9feb-ae0337fb652e.png)
+![image](https://user-images.githubusercontent.com/6436094/62118411-4b69bb80-b2c6-11e9-8be6-270e2b6d03f7.png)
+
+
+## Question 3.5 asked for Image Quantization (our own implementation, opencv functions are not al:
+Original:
+
+![image](https://user-images.githubusercontent.com/6436094/62118011-99ca8a80-b2c5-11e9-8bbc-5ce1f2593331.png)
+-> Quantized:
+![image](https://user-images.githubusercontent.com/6436094/62118181-e7df8e00-b2c5-11e9-8ae1-99ead52cbab1.png)
