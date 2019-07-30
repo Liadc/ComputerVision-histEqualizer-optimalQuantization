@@ -3,7 +3,11 @@ Part of Image Processing &amp; Computer Vision course at Ariel University, 2019.
 
 ## Question 3.4 asked for Histogram Equalization:
 We are showing the original image using **opencv**, original histogram with CDF plots using **pyplot**.
-Original:
+The histogram & CDF of original and equalized images:
+
+![image](https://user-images.githubusercontent.com/6436094/62118411-4b69bb80-b2c6-11e9-8be6-270e2b6d03f7.png)
+
+Original image:
 
 ![image](https://user-images.githubusercontent.com/6436094/61470782-4a619180-a98a-11e9-9db9-9565bd9900cf.png)
 
@@ -14,9 +18,7 @@ Output Image:
 ![image](https://user-images.githubusercontent.com/6436094/61470863-6ebd6e00-a98a-11e9-8f58-26cfde4d8672.png)
 
 
-The histogram & CDF of original and equalized images:
 
-![image](https://user-images.githubusercontent.com/6436094/62118411-4b69bb80-b2c6-11e9-8be6-270e2b6d03f7.png)
 
 
 ## Question 3.5 asked for Image Quantization (our own implementation, opencv functions are not al:
