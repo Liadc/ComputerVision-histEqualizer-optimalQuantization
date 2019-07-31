@@ -21,7 +21,7 @@ Output Image:
 
 
 
-## Question 3.5 asked for Image Quantization (our own implementation, opencv functions are not allowed:
+## Question 3.5 asked for Image Quantization (our own implementation, opencv functions are not allowed):
 Original:
 
 ![image](https://user-images.githubusercontent.com/6436094/62118011-99ca8a80-b2c5-11e9-8bbc-5ce1f2593331.png)
