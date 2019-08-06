@@ -1,4 +1,4 @@
-# opencv-histEqualizer-optimalQuantization
+# opencv - Histogram Equalizer - Optimal Quantization - Python Implementation
 Part of Image Processing &amp; Computer Vision course at Ariel University, 2019. 
 
 ## Question 3.4 asked for Histogram Equalization:
